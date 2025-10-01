@@ -11,3 +11,6 @@ output/
 *.txt.bak
 .vscode/
 .idea/
+docs/
+htmlexample/
+*.log
