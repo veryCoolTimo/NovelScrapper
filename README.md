@@ -29,9 +29,18 @@ python main.py --url "..." --proxy "http://user:pass@host:port"
 - `--end` - Ending chapter number (default: until failure)
 - `--output` - Output directory (default: ./output)
 - `--proxy` - Proxy server URL
+- `--cookies` - Path to cookies JSON file (for sites requiring login)
 - `--no-merge` - Don't merge chapters into single file
 - `--headful` - Show browser window
 - `--delay` - Delay between chapters in seconds (default: 2.0)
+
+## Authentication
+
+Sites may require login. Export cookies from browser:
+1. Install browser extension (EditThisCookie, etc.)
+2. Login to the site
+3. Export cookies as JSON
+4. Use `--cookies cookies.json`
 
 ## Output
 

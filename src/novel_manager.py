@@ -18,16 +18,18 @@ logger = logging.getLogger(__name__)
 class NovelManager:
     """Manage the download of a complete novel."""
 
-    def __init__(self, start_url: str, output_dir: str = config.OUTPUT_DIR, proxy: Optional[str] = None):
+    def __init__(self, start_url: str, output_dir: str = config.OUTPUT_DIR, proxy: Optional[str] = None, cookies_file: Optional[str] = None):
         """Initialize the novel manager.
 
         Args:
             start_url: URL of the first chapter to download
             output_dir: Base output directory
             proxy: Optional proxy server URL
+            cookies_file: Path to cookies JSON file
         """
         self.start_url = start_url
         self.proxy = proxy
+        self.cookies_file = cookies_file
         self.output_dir = Path(output_dir)
         self.novel_name = self._extract_novel_name(start_url)
         self.novel_dir = self.output_dir / self.novel_name
@@ -139,7 +141,7 @@ Source: {url}
             end_chapter: Ending chapter number (None = until failure)
             max_chapters: Maximum chapters to download
         """
-        async with NovelScraper(proxy=self.proxy) as scraper:
+        async with NovelScraper(proxy=self.proxy, cookies_file=self.cookies_file) as scraper:
             # Generate chapter URLs based on start URL pattern
             current_url = self.start_url
 
@@ -166,8 +168,8 @@ Source: {url}
                 if end_chapter and chapter_num > end_chapter:
                     break
 
-                # Generate URL
-                chapter_url = f"{base_url}/v{volume:02d}/c{chapter_num:02d}"
+                # Generate URL (preserve original format - v1 or v01)
+                chapter_url = f"{base_url}/v{volume}/c{chapter_num}"
 
                 # Download chapter
                 success = await self.download_chapter(scraper, chapter_url, chapter_num)

@@ -100,6 +100,11 @@ Examples:
         help=f'Delay between chapters in seconds (default: {config.DELAY_BETWEEN_CHAPTERS})'
     )
 
+    parser.add_argument(
+        '--cookies',
+        help='Path to cookies JSON file (for sites requiring login)'
+    )
+
     return parser.parse_args()
 
 
@@ -127,7 +132,8 @@ async def main():
         manager = NovelManager(
             start_url=args.url,
             output_dir=args.output,
-            proxy=args.proxy
+            proxy=args.proxy,
+            cookies_file=args.cookies
         )
 
         # Download chapters

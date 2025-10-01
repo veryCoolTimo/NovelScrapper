@@ -23,14 +23,14 @@ VIEWPORT = {"width": 1920, "height": 1080}
 # CSS Selectors
 SELECTORS = {
     "chapter_content": [
+        "main[data-reader-content] .text-content",
+        "main.ls_b .node-doc",
         ".reader-container .text",
         "div.text-container p",
         ".chapter-content",
-        "article .content",
-        ".reader__container",
-        "div[class*='reader'] p",
     ],
     "chapter_title": [
+        "h1.ls_cq",
         ".reader-header h1",
         "h1.reader-header-title",
         ".chapter-title",

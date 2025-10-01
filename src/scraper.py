@@ -1,7 +1,9 @@
 """Browser automation for scraping novel chapters."""
 
 import asyncio
+import json
 import logging
+from pathlib import Path
 from typing import Optional
 from playwright.async_api import async_playwright, Browser, Page, TimeoutError as PlaywrightTimeout
 
@@ -14,15 +16,17 @@ logger = logging.getLogger(__name__)
 class NovelScraper:
     """Handles browser automation and page navigation."""
 
-    def __init__(self, headless: bool = config.HEADLESS_MODE, proxy: Optional[str] = None):
+    def __init__(self, headless: bool = config.HEADLESS_MODE, proxy: Optional[str] = None, cookies_file: Optional[str] = None):
         """Initialize the scraper.
 
         Args:
             headless: Run browser in headless mode
             proxy: Proxy server URL (format: "http://user:pass@host:port")
+            cookies_file: Path to cookies JSON file
         """
         self.headless = headless
         self.proxy = proxy or (config.PROXY_SERVER if config.PROXY_ENABLED else None)
+        self.cookies_file = cookies_file
         self.playwright = None
         self.browser: Optional[Browser] = None
         self.page: Optional[Page] = None
@@ -56,6 +60,16 @@ class NovelScraper:
 
         self.context = await self.browser.new_context(**context_options)
         self.page = await self.context.new_page()
+
+        # Load cookies if provided
+        if self.cookies_file and Path(self.cookies_file).exists():
+            try:
+                with open(self.cookies_file, 'r') as f:
+                    cookies = json.load(f)
+                await self.context.add_cookies(cookies)
+                logger.info(f"Loaded cookies from {self.cookies_file}")
+            except Exception as e:
+                logger.warning(f"Failed to load cookies: {e}")
 
         # Set default timeout
         self.page.set_default_timeout(config.PAGE_LOAD_TIMEOUT)

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "cookie_name",
+    "value": "cookie_value",
+    "domain": ".ranobelib.me",
+    "path": "/",
+    "httpOnly": true,
+    "secure": true
+  }
+]
