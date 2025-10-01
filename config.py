@@ -4,8 +4,8 @@
 HEADLESS_MODE = True
 PAGE_LOAD_TIMEOUT = 30000  # milliseconds
 DELAY_BETWEEN_CHAPTERS = 2.0  # seconds
-MAX_RETRIES = 3
-RETRY_DELAY = 5.0  # seconds
+MAX_RETRIES = 5
+RETRY_DELAY = 3.0  # seconds
 
 # Proxy settings (optional)
 PROXY_ENABLED = False

@@ -87,7 +87,7 @@ class NovelScraper:
             True if navigation successful, False otherwise
         """
         try:
-            logger.info(f"Navigating to: {url}")
+            logger.info(f"Navigating to: {url} (attempt {retry + 1})")
             response = await self.page.goto(url, wait_until="domcontentloaded", timeout=60000)
 
             if response and response.status >= 400:
@@ -102,7 +102,21 @@ class NovelScraper:
             await self.wait_for_content_load()
 
             # Additional wait for dynamic content
-            await asyncio.sleep(3)
+            await asyncio.sleep(5)
+
+            # Check if we got server error page - reload if needed
+            page_text = await self.page.text_content("body")
+            if page_text and ("ошибка сервера" in page_text.lower() or "server error" in page_text.lower()):
+                logger.warning("Server error detected, reloading page...")
+                if retry < config.MAX_RETRIES:
+                    await asyncio.sleep(3)
+                    await self.page.reload(wait_until="domcontentloaded")
+                    await asyncio.sleep(5)
+                    # Check again
+                    page_text = await self.page.text_content("body")
+                    if page_text and ("ошибка сервера" in page_text.lower() or "server error" in page_text.lower()):
+                        logger.warning("Still server error, retrying from scratch...")
+                        return await self.navigate_to_chapter(url, retry + 1)
 
             return True
 
@@ -122,7 +136,7 @@ class NovelScraper:
                 return await self.navigate_to_chapter(url, retry + 1)
             return False
 
-    async def wait_for_content_load(self, timeout: int = 10000):
+    async def wait_for_content_load(self, timeout: int = 15000):
         """Wait for chapter content to be loaded.
 
         Args:
@@ -131,15 +145,15 @@ class NovelScraper:
         # Try multiple selectors
         for selector in config.SELECTORS["chapter_content"]:
             try:
-                await self.page.wait_for_selector(selector, timeout=timeout, state="visible")
-                logger.debug(f"Content loaded with selector: {selector}")
+                await self.page.wait_for_selector(selector, timeout=timeout, state="attached")
+                logger.info(f"Content loaded with selector: {selector}")
                 return
             except PlaywrightTimeout:
                 continue
 
         # If no selector worked, just wait a bit
-        logger.warning("No content selector found, waiting 3 seconds...")
-        await asyncio.sleep(3)
+        logger.warning("No content selector found, waiting 5 seconds...")
+        await asyncio.sleep(5)
 
     async def get_page_html(self) -> str:
         """Get the current page's HTML content.
