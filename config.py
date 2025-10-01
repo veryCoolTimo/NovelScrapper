@@ -20,10 +20,11 @@ FINAL_FILENAME = "full.txt"
 USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 VIEWPORT = {"width": 1920, "height": 1080}
 
-# CSS Selectors (will be refined after testing)
+# CSS Selectors
 SELECTORS = {
     "chapter_content": [
         ".reader-container .text",
+        "div.text-container p",
         ".chapter-content",
         "article .content",
         ".reader__container",
@@ -31,6 +32,7 @@ SELECTORS = {
     ],
     "chapter_title": [
         ".reader-header h1",
+        "h1.reader-header-title",
         ".chapter-title",
         "h1.title",
     ],

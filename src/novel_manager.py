@@ -47,10 +47,17 @@ class NovelManager:
         Returns:
             Novel name for directory
         """
-        # Extract from URL: /ru/195738--myst-might-mayhem/read/...
-        match = re.search(r'/ru/\d+--([^/]+)', url)
-        if match:
-            return match.group(1)
+        # Extract from URL patterns:
+        # ranobelib.me: /ru/book/195738--myst-might-mayhem/read/...
+        # ranobe.org: /r/195738--myst-might-mayhem/v01/c01
+        patterns = [
+            r'/ru/book/\d+--([^/]+)',  # ranobelib.me
+            r'/r/\d+--([^/]+)',         # ranobe.org
+        ]
+        for pattern in patterns:
+            match = re.search(pattern, url)
+            if match:
+                return match.group(1)
         return "unknown-novel"
 
     async def download_chapter(self, scraper: NovelScraper, url: str, chapter_num: int) -> bool:
@@ -137,7 +144,9 @@ Source: {url}
             current_url = self.start_url
 
             # Parse URL to get base pattern
-            # Example: /ru/195738--myst-might-mayhem/read/v01/c01
+            # Examples:
+            # ranobelib.me: /ru/book/195738--myst-might-mayhem/read/v01/c01
+            # ranobe.org: https://ranobe.org/r/195738--myst-might-mayhem/v01/c01
             match = re.match(r'(.*)/v(\d+)/c(\d+)', current_url)
             if not match:
                 logger.error("Could not parse URL pattern")

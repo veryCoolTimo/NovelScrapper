@@ -25,12 +25,12 @@ logger = logging.getLogger(__name__)
 def parse_args():
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(
-        description='Download novel chapters from ranobelib.me',
+        description='Download novel chapters from ranobe sites',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
   # Download all chapters starting from chapter 1
-  python main.py --url "https://ranobelib.me/ru/195738--myst-might-mayhem/read/v01/c01"
+  python main.py --url "https://ranobelib.me/ru/book/195738--myst-might-mayhem/read/v01/c01"
 
   # Download chapters 1-20
   python main.py --url "..." --start 1 --end 20

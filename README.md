@@ -1,6 +1,6 @@
 # Novel Scraper
 
-Download novel chapters from ranobelib.me and save as .txt files.
+Download novel chapters from ranobe sites (ranobelib.me, ranobe.org) and save as .txt files.
 
 ## Installation
 
@@ -13,7 +13,7 @@ playwright install chromium
 
 ```bash
 # Download all chapters
-python main.py --url "https://ranobelib.me/ru/195738--myst-might-mayhem/read/v01/c01"
+python main.py --url "https://ranobelib.me/ru/book/195738--myst-might-mayhem/read/v01/c01"
 
 # Download chapters 1-20
 python main.py --url "..." --start 1 --end 20

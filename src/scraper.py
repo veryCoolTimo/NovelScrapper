@@ -74,9 +74,9 @@ class NovelScraper:
         """
         try:
             logger.info(f"Navigating to: {url}")
-            response = await self.page.goto(url, wait_until="networkidle")
+            response = await self.page.goto(url, wait_until="domcontentloaded", timeout=60000)
 
-            if response.status >= 400:
+            if response and response.status >= 400:
                 logger.error(f"HTTP {response.status} error for {url}")
                 if retry < config.MAX_RETRIES:
                     logger.info(f"Retrying... ({retry + 1}/{config.MAX_RETRIES})")
@@ -86,6 +86,10 @@ class NovelScraper:
 
             # Wait for content to load
             await self.wait_for_content_load()
+
+            # Additional wait for dynamic content
+            await asyncio.sleep(3)
+
             return True
 
         except PlaywrightTimeout:
